@@ -76,41 +76,49 @@ public class ProductService {
 
     public Product getProductById(Long productId) {
         return productRepository.findProductWithDetails(productId)
-                .orElseThrow(() ->
-                        new ProductNotFoundException(productId));
+                .orElseThrow(() -> new ProductNotFoundException(productId));
+    }
+
+    public ProductForm getProductForm(Long productId) {
+        Product product = getProductById(productId);
+        ProductForm form = new ProductForm();
+
+        form.setProductName(product.getProductName());
+        form.setDescription(product.getDescription());
+        form.setPrice(product.getPrice());
+        form.setPetType(product.getPetType());
+        form.setSize(product.getSize());
+        form.setBrandId(product.getBrand().getBrandId());
+        form.setCategoryId(product.getCategory().getCategoryId());
+        form.setSupplierId(product.getSupplier().getSupplierId());
+
+        return form;
     }
 
     @Transactional
     public Product createProduct(ProductForm form) {
-
-        Brand brand = brandRepository.findById(form.getBrandId())
-                .orElseThrow(() ->
-                        new IllegalArgumentException("Invalid brand selected."));
-
-        Category category =
-                categoryRepository.findById(form.getCategoryId())
-                        .orElseThrow(() ->
-                                new IllegalArgumentException(
-                                        "Invalid category selected."));
-
-        Supplier supplier =
-                supplierRepository.findById(form.getSupplierId())
-                        .orElseThrow(() ->
-                                new IllegalArgumentException(
-                                        "Invalid supplier selected."));
-
         Product product = new Product();
-
-        product.setProductName(form.getProductName().trim());
-        product.setDescription(normalizeText(form.getDescription()));
-        product.setPrice(form.getPrice());
-        product.setPetType(form.getPetType());
-        product.setSize(normalizeText(form.getSize()));
-        product.setBrand(brand);
-        product.setCategory(category);
-        product.setSupplier(supplier);
-
+        copyFormToProduct(form, product);
         return productRepository.save(product);
+    }
+
+    @Transactional
+    public Product updateProduct(Long productId, ProductForm form) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundException(productId));
+
+        copyFormToProduct(form, product);
+        return productRepository.save(product);
+    }
+
+    @Transactional
+    public String deleteProduct(Long productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundException(productId));
+
+        String productName = product.getProductName();
+        productRepository.delete(product);
+        return productName;
     }
 
     public List<Brand> getAllBrands() {
@@ -139,6 +147,29 @@ public class ProductService {
 
     public long countSuppliers() {
         return supplierRepository.count();
+    }
+
+    private void copyFormToProduct(ProductForm form, Product product) {
+        Brand brand = brandRepository.findById(form.getBrandId())
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Invalid brand selected."));
+
+        Category category = categoryRepository.findById(form.getCategoryId())
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Invalid category selected."));
+
+        Supplier supplier = supplierRepository.findById(form.getSupplierId())
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Invalid supplier selected."));
+
+        product.setProductName(form.getProductName().trim());
+        product.setDescription(normalizeText(form.getDescription()));
+        product.setPrice(form.getPrice());
+        product.setPetType(form.getPetType().trim());
+        product.setSize(normalizeText(form.getSize()));
+        product.setBrand(brand);
+        product.setCategory(category);
+        product.setSupplier(supplier);
     }
 
     private String normalizeText(String value) {

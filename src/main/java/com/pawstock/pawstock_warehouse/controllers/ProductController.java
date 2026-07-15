@@ -46,35 +46,24 @@ public class ProductController {
             @RequestParam(required = false) Long categoryId,
             @RequestParam(required = false) String petType,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "productName")
-            String sortField,
-            @RequestParam(defaultValue = "asc")
-            String sortDirection,
+            @RequestParam(defaultValue = "productName") String sortField,
+            @RequestParam(defaultValue = "asc") String sortDirection,
             Model model) {
 
-        Page<Product> productPage =
-                productService.searchProducts(
-                        keyword,
-                        brandId,
-                        categoryId,
-                        petType,
-                        page,
-                        sortField,
-                        sortDirection);
+        Page<Product> productPage = productService.searchProducts(
+                keyword,
+                brandId,
+                categoryId,
+                petType,
+                page,
+                sortField,
+                sortDirection);
 
         model.addAttribute("productPage", productPage);
         model.addAttribute("products", productPage.getContent());
-
-        model.addAttribute(
-                "brands",
-                productService.getAllBrands());
-
-        model.addAttribute(
-                "categories",
-                productService.getAllCategories());
-
+        model.addAttribute("brands", productService.getAllBrands());
+        model.addAttribute("categories", productService.getAllCategories());
         model.addAttribute("petTypes", PET_TYPES);
-
         model.addAttribute("keyword", keyword);
         model.addAttribute("selectedBrandId", brandId);
         model.addAttribute("selectedCategoryId", categoryId);
@@ -87,8 +76,8 @@ public class ProductController {
 
     @GetMapping("/new")
     public String showCreateForm(Model model) {
-
         model.addAttribute("productForm", new ProductForm());
+        model.addAttribute("isEdit", false);
         addFormOptions(model);
 
         return "products/form";
@@ -96,27 +85,24 @@ public class ProductController {
 
     @PostMapping
     public String createProduct(
-            @Valid
-            @ModelAttribute("productForm")
-            ProductForm productForm,
+            @Valid @ModelAttribute("productForm") ProductForm productForm,
             BindingResult bindingResult,
             Model model,
             RedirectAttributes redirectAttributes) {
 
         if (bindingResult.hasErrors()) {
+            model.addAttribute("isEdit", false);
             addFormOptions(model);
             return "products/form";
         }
 
-        Product savedProduct =
-                productService.createProduct(productForm);
+        Product savedProduct = productService.createProduct(productForm);
 
         redirectAttributes.addFlashAttribute(
                 "successMessage",
                 "Product was added successfully.");
 
-        return "redirect:/products/"
-                + savedProduct.getProductId();
+        return "redirect:/products/" + savedProduct.getProductId();
     }
 
     @GetMapping("/{productId}")
@@ -131,20 +117,63 @@ public class ProductController {
         return "products/details";
     }
 
+    @GetMapping("/{productId}/edit")
+    public String showEditForm(
+            @PathVariable Long productId,
+            Model model) {
+
+        model.addAttribute(
+                "productForm",
+                productService.getProductForm(productId));
+        model.addAttribute("productId", productId);
+        model.addAttribute("isEdit", true);
+        addFormOptions(model);
+
+        return "products/form";
+    }
+
+    @PostMapping("/{productId}")
+    public String updateProduct(
+            @PathVariable Long productId,
+            @Valid @ModelAttribute("productForm") ProductForm productForm,
+            BindingResult bindingResult,
+            Model model,
+            RedirectAttributes redirectAttributes) {
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("productId", productId);
+            model.addAttribute("isEdit", true);
+            addFormOptions(model);
+            return "products/form";
+        }
+
+        productService.updateProduct(productId, productForm);
+
+        redirectAttributes.addFlashAttribute(
+                "successMessage",
+                "Product was updated successfully.");
+
+        return "redirect:/products/" + productId;
+    }
+
+    @PostMapping("/{productId}/delete")
+    public String deleteProduct(
+            @PathVariable Long productId,
+            RedirectAttributes redirectAttributes) {
+
+        String productName = productService.deleteProduct(productId);
+
+        redirectAttributes.addFlashAttribute(
+                "successMessage",
+                productName + " was deleted successfully.");
+
+        return "redirect:/products";
+    }
+
     private void addFormOptions(Model model) {
-
-        model.addAttribute(
-                "brands",
-                productService.getAllBrands());
-
-        model.addAttribute(
-                "categories",
-                productService.getAllCategories());
-
-        model.addAttribute(
-                "suppliers",
-                productService.getAllSuppliers());
-
+        model.addAttribute("brands", productService.getAllBrands());
+        model.addAttribute("categories", productService.getAllCategories());
+        model.addAttribute("suppliers", productService.getAllSuppliers());
         model.addAttribute("petTypes", PET_TYPES);
     }
 }
