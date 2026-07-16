@@ -68,7 +68,7 @@
         <div class="col-12">
           <h2 class="h6 text-uppercase text-secondary">Created At</h2>
 
-          <p th:text="${product.createdAt}"></p>
+          <p th:text="${#temporals.format(product.createdAt, 'dd MMM yyyy HH:mm')}"></p>
         </div>
       </div>
 
