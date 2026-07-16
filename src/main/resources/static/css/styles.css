@@ -77,6 +77,19 @@ body {
   border-color: var(--paw-primary);
 }
 
+.sort-active {
+  background-color: var(--paw-primary) !important;
+  color: white !important;
+}
+
+.sort-active.asc::after {
+  content: " ▲";
+}
+
+.sort-active.desc::after {
+  content: " ▼";
+}
+
 .error-card {
   max-width: 600px;
 }

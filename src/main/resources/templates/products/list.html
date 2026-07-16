@@ -138,11 +138,19 @@
       <table class="table table-hover align-middle">
         <thead class="table-dark">
           <tr>
-            <th>Product</th>
+            <th th:classappend="${sortField == 'productName' ? 'sort-active ' + sortDirection : ''}">
+              Product
+            </th>
             <th>Pet Type</th>
-            <th>Brand</th>
-            <th>Category</th>
-            <th>Price</th>
+            <th th:classappend="${sortField == 'brand.brandName' ? 'sort-active ' + sortDirection : ''}">
+              Brand
+            </th>
+            <th th:classappend="${sortField == 'category.categoryName' ? 'sort-active ' + sortDirection : ''}">
+              Category
+            </th>
+            <th th:classappend="${sortField == 'price' ? 'sort-active ' + sortDirection : ''}">
+              Price
+            </th>
             <th>Action</th>
           </tr>
         </thead>
