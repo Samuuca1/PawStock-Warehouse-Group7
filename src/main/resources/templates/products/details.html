@@ -41,11 +41,22 @@
             </p>
           </div>
 
-          <div class="col-md-8">
+          <div class="col-md-4">
             <h2 class="h6 text-uppercase text-secondary">Size</h2>
 
             <p th:text="${product.size != null
                       ? product.size : 'Not specified'}"></p>
+          </div>
+
+          <div class="col-md-4">
+            <h2 class="h6 text-uppercase text-secondary">Quantity</h2>
+
+            <p>
+              <span class="badge"
+                    th:text="${product.quantity}"
+                    th:classappend="${product.quantity < 10} ? 'text-bg-danger' : 'text-bg-success'">
+              </span>
+            </p>
           </div>
 
           <div class="col-md-4">

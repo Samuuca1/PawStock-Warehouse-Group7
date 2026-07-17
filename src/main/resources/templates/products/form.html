@@ -79,17 +79,29 @@
               </div>
             </div>
 
-            <div class="mb-3">
-              <label for="petType" class="form-label"> Pet Type </label>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="petType" class="form-label"> Pet Type </label>
 
-              <select id="petType" class="form-select" th:field="*{petType}" th:classappend="${#fields.hasErrors('petType')}
-                                    ? 'is-invalid' : ''">
-                <option value="">Select a pet type</option>
+                <select id="petType" class="form-select" th:field="*{petType}" th:classappend="${#fields.hasErrors('petType')}
+                                      ? 'is-invalid' : ''">
+                  <option value="">Select a pet type</option>
 
-                <option th:each="type : ${petTypes}" th:value="${type}" th:text="${type}"></option>
-              </select>
+                  <option th:each="type : ${petTypes}" th:value="${type}" th:text="${type}"></option>
+                </select>
 
-              <div class="invalid-feedback" th:errors="*{petType}"></div>
+                <div class="invalid-feedback" th:errors="*{petType}"></div>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="quantity" class="form-label"> Quantity </label>
+
+                <input id="quantity" type="number" step="1" min="0" class="form-control" th:field="*{quantity}"
+                       th:classappend="${#fields.hasErrors('quantity')}
+                                           ? 'is-invalid' : ''" />
+
+                <div class="invalid-feedback" th:errors="*{quantity}"></div>
+              </div>
             </div>
 
             <div class="row">

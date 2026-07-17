@@ -86,6 +86,11 @@
               Name
             </option>
 
+            <option value="quantity" th:selected="${sortField
+                                == 'quantity'}">
+              Quantity
+            </option>
+
             <option value="price" th:selected="${sortField
                                 == 'price'}">
               Price
@@ -141,6 +146,9 @@
             <th th:classappend="${sortField == 'productName' ? 'sort-active ' + sortDirection : ''}">
               Product
             </th>
+            <th th:classappend="${sortField == 'quantity' ? 'sort-active ' + sortDirection : ''}">
+              Quantity
+            </th>
             <th>Pet Type</th>
             <th th:classappend="${sortField == 'brand.brandName' ? 'sort-active ' + sortDirection : ''}">
               Brand
@@ -161,6 +169,13 @@
               <strong th:text="${product.productName}"> Product </strong>
 
               <div class="small text-secondary" th:text="${product.size}"></div>
+            </td>
+
+            <td>
+              <span class="badge"
+                    th:text="${product.quantity}"
+                    th:classappend="${product.quantity < 10} ? 'text-bg-danger' : 'text-bg-success'">
+              </span>
             </td>
 
             <td th:text="${product.petType}">Dog</td>

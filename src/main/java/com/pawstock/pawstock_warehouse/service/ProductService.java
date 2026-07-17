@@ -88,6 +88,7 @@ public class ProductService {
         form.setPrice(product.getPrice());
         form.setPetType(product.getPetType());
         form.setSize(product.getSize());
+        form.setQuantity(product.getQuantity());
         form.setBrandId(product.getBrand().getBrandId());
         form.setCategoryId(product.getCategory().getCategoryId());
         form.setSupplierId(product.getSupplier().getSupplierId());
@@ -167,6 +168,7 @@ public class ProductService {
         product.setPrice(form.getPrice());
         product.setPetType(form.getPetType().trim());
         product.setSize(normalizeText(form.getSize()));
+        product.setQuantity(form.getQuantity());
         product.setBrand(brand);
         product.setCategory(category);
         product.setSupplier(supplier);
@@ -189,6 +191,7 @@ public class ProductService {
             case "productName",
                  "price",
                  "petType",
+                 "quantity",
                  "brand.brandName",
                  "category.categoryName",
                  "createdAt" -> sortField;

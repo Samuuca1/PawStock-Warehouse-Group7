@@ -2,10 +2,7 @@ package com.pawstock.pawstock_warehouse.model;
 
 import java.math.BigDecimal;
 
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 public class ProductForm {
 
@@ -29,6 +26,11 @@ public class ProductForm {
     @Size(max = 30,
             message = "Size cannot exceed 30 characters.")
     private String size;
+
+    @NotNull(message = "Quantity is required.")
+    @Min(value = 0,
+            message = "Quantity cannot be negative.")
+    private Integer quantity;
 
     @NotNull(message = "Brand is required.")
     private Long brandId;
@@ -78,6 +80,12 @@ public class ProductForm {
     public void setSize(String size) {
         this.size = size;
     }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {this.quantity = quantity;}
 
     public Long getBrandId() {
         return brandId;

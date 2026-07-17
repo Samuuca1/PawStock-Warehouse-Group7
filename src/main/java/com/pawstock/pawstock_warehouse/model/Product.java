@@ -13,10 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 @Entity
 @Table(name = "products")
@@ -51,6 +48,12 @@ public class Product {
           message = "Size cannot exceed 30 characters.")
     @Column(length = 30)
     private String size;
+
+    @NotNull(message = "Quantity is required.")
+    @Min(value = 0,
+            message = "Quantity cannot be negative.")
+    @Column(nullable = false)
+    private Integer quantity;
 
     @NotNull(message = "Brand is required.")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -124,6 +127,14 @@ public class Product {
 
     public void setSize(String size) {
         this.size = size;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
     }
 
     public Brand getBrand() {
