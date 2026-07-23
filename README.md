@@ -68,7 +68,7 @@ http://localhost:8080
 
 ## Notes
 
-This is just the initial project setup for Assignment 0 for Group 7. Later updates will come as needed for future submissions.
+Later updates will come as needed for future submissions.
 
 ## Deliverable 1 Features
 
