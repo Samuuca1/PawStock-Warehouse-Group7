@@ -1,282 +1,408 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html
+  lang="en"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+  <head>
+    <meta charset="UTF-8" />
 
-<head>
-  <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Products | PawStock Warehouse</title>
 
-  <title>Products</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
 
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+  </head>
 
-  <link rel="stylesheet" th:href="@{/css/styles.css}" />
-</head>
+  <body class="d-flex flex-column min-vh-100">
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-<body class="d-flex flex-column min-vh-100">
-  <div th:replace="~{fragments/navbar :: navbar}"></div>
+    <main class="container py-5">
+      <!-- Successful create, update, or delete message -->
+      <div
+        th:if="${successMessage}"
+        class="alert alert-success alert-dismissible fade show"
+        role="alert"
+      >
+        <span th:text="${successMessage}"></span>
 
-  <main class="container py-5">
-    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
-      <span th:text="${successMessage}"></span>
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-
-    <header class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
-      <div>
-        <h1>Product Inventory</h1>
-
-        <p class="text-secondary mb-0">
-          Search, filter and sort saved products.
-        </p>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+          aria-label="Close"
+        ></button>
       </div>
 
-      <a th:href="@{/products/new}" class="btn btn-primary"> Add Product </a>
-    </header>
+      <header
+        class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4"
+      >
+        <div>
+          <h1>Product Inventory</h1>
 
-    <section class="filter-card mb-4">
-      <form th:action="@{/products}" method="get" class="row g-3">
-        <div class="col-lg-3">
-          <label for="keyword" class="form-label"> Product Name </label>
-
-          <input id="keyword" name="keyword" type="search" class="form-control" th:value="${keyword}"
-            placeholder="Search products" />
+          <p class="text-secondary mb-0">
+            Search, filter and sort saved products.
+          </p>
         </div>
 
-        <div class="col-md-4 col-lg-2">
-          <label for="brandId" class="form-label"> Brand </label>
+        <!-- Only Staff and Admin can add products -->
+        <a
+          th:href="@{/products/new}"
+          class="btn btn-primary"
+          sec:authorize="hasAnyRole('STAFF', 'ADMIN')"
+        >
+          Add Product
+        </a>
+      </header>
 
-          <select id="brandId" name="brandId" class="form-select">
-            <option value="">All brands</option>
+      <!-- Search, filter, and sorting form -->
+      <section class="filter-card mb-4">
+        <form th:action="@{/products}" method="get" class="row g-3">
+          <div class="col-lg-3">
+            <label for="keyword" class="form-label"> Product Name </label>
 
-            <option th:each="brand : ${brands}" th:value="${brand.brandId}" th:text="${brand.brandName}" th:selected="${brand.brandId
-                                == selectedBrandId}"></option>
-          </select>
-        </div>
+            <input
+              id="keyword"
+              name="keyword"
+              type="search"
+              class="form-control"
+              th:value="${keyword}"
+              placeholder="Search products"
+            />
+          </div>
 
-        <div class="col-md-4 col-lg-2">
-          <label for="categoryId" class="form-label"> Category </label>
+          <div class="col-md-4 col-lg-2">
+            <label for="brandId" class="form-label"> Brand </label>
 
-          <select id="categoryId" name="categoryId" class="form-select">
-            <option value="">All categories</option>
+            <select id="brandId" name="brandId" class="form-select">
+              <option value="">All brands</option>
 
-            <option th:each="category : ${categories}" th:value="${category.categoryId}"
-              th:text="${category.categoryName}" th:selected="${category.categoryId
-                                == selectedCategoryId}"></option>
-          </select>
-        </div>
+              <option
+                th:each="brand : ${brands}"
+                th:value="${brand.brandId}"
+                th:text="${brand.brandName}"
+                th:selected="${brand.brandId == selectedBrandId}"
+              ></option>
+            </select>
+          </div>
 
-        <div class="col-md-4 col-lg-2">
-          <label for="petType" class="form-label"> Pet Type </label>
+          <div class="col-md-4 col-lg-2">
+            <label for="categoryId" class="form-label"> Category </label>
 
-          <select id="petType" name="petType" class="form-select">
-            <option value="">All pet types</option>
+            <select id="categoryId" name="categoryId" class="form-select">
+              <option value="">All categories</option>
 
-            <option th:each="type : ${petTypes}" th:value="${type}" th:text="${type}" th:selected="${type
-                                == selectedPetType}"></option>
-          </select>
-        </div>
+              <option
+                th:each="category : ${categories}"
+                th:value="${category.categoryId}"
+                th:text="${category.categoryName}"
+                th:selected="${category.categoryId == selectedCategoryId}"
+              ></option>
+            </select>
+          </div>
 
-        <div class="col-md-6 col-lg-2">
-          <label for="sortField" class="form-label"> Sort By </label>
+          <div class="col-md-4 col-lg-2">
+            <label for="petType" class="form-label"> Pet Type </label>
 
-          <select id="sortField" name="sortField" class="form-select">
-            <option value="productName" th:selected="${sortField
-                                == 'productName'}">
-              Name
-            </option>
+            <select id="petType" name="petType" class="form-select">
+              <option value="">All pet types</option>
 
-            <option value="quantity" th:selected="${sortField
-                                == 'quantity'}">
-              Quantity
-            </option>
+              <option
+                th:each="type : ${petTypes}"
+                th:value="${type}"
+                th:text="${type}"
+                th:selected="${type == selectedPetType}"
+              ></option>
+            </select>
+          </div>
 
-            <option value="price" th:selected="${sortField
-                                == 'price'}">
-              Price
-            </option>
+          <div class="col-md-6 col-lg-2">
+            <label for="sortField" class="form-label"> Sort By </label>
 
-            <option value="brand.brandName" th:selected="${sortField
-                                == 'brand.brandName'}">
-              Brand
-            </option>
+            <select id="sortField" name="sortField" class="form-select">
+              <option
+                value="productName"
+                th:selected="${sortField == 'productName'}"
+              >
+                Name
+              </option>
 
-            <option value="category.categoryName" th:selected="${sortField
-                                == 'category.categoryName'}">
-              Category
-            </option>
+              <option value="quantity" th:selected="${sortField == 'quantity'}">
+                Quantity
+              </option>
 
-            <option value="createdAt" th:selected="${sortField
-                                == 'createdAt'}">
-              Date Added
-            </option>
-          </select>
-        </div>
+              <option value="price" th:selected="${sortField == 'price'}">
+                Price
+              </option>
 
-        <div class="col-md-6 col-lg-1">
-          <label for="sortDirection" class="form-label"> Order </label>
+              <option
+                value="brand.brandName"
+                th:selected="${sortField == 'brand.brandName'}"
+              >
+                Brand
+              </option>
 
-          <select id="sortDirection" name="sortDirection" class="form-select">
-            <option value="asc" th:selected="${sortDirection
-                                == 'asc'}">
-              ASC
-            </option>
+              <option
+                value="category.categoryName"
+                th:selected="${sortField == 'category.categoryName'}"
+              >
+                Category
+              </option>
 
-            <option value="desc" th:selected="${sortDirection
-                                == 'desc'}">
-              DESC
-            </option>
-          </select>
-        </div>
+              <option
+                value="createdAt"
+                th:selected="${sortField == 'createdAt'}"
+              >
+                Date Added
+              </option>
+            </select>
+          </div>
 
-        <div class="col-12 d-flex gap-2">
-          <button type="submit" class="btn btn-dark">Apply</button>
+          <div class="col-md-6 col-lg-1">
+            <label for="sortDirection" class="form-label"> Order </label>
 
-          <a th:href="@{/products}" class="btn btn-outline-secondary">
-            Reset
-          </a>
-        </div>
-      </form>
-    </section>
+            <select id="sortDirection" name="sortDirection" class="form-select">
+              <option value="asc" th:selected="${sortDirection == 'asc'}">
+                ASC
+              </option>
 
-    <section class="table-responsive">
-      <table class="table table-hover align-middle">
-        <thead class="table-dark">
-          <tr>
-            <th th:classappend="${sortField == 'productName' ? 'sort-active ' + sortDirection : ''}">
-              Product
-            </th>
-            <th th:classappend="${sortField == 'quantity' ? 'sort-active ' + sortDirection : ''}">
-              Quantity
-            </th>
-            <th>Pet Type</th>
-            <th th:classappend="${sortField == 'brand.brandName' ? 'sort-active ' + sortDirection : ''}">
-              Brand
-            </th>
-            <th th:classappend="${sortField == 'category.categoryName' ? 'sort-active ' + sortDirection : ''}">
-              Category
-            </th>
-            <th th:classappend="${sortField == 'price' ? 'sort-active ' + sortDirection : ''}">
-              Price
-            </th>
-            <th>Action</th>
-          </tr>
-        </thead>
+              <option value="desc" th:selected="${sortDirection == 'desc'}">
+                DESC
+              </option>
+            </select>
+          </div>
 
-        <tbody>
-          <tr th:each="product : ${products}">
-            <td>
-              <strong th:text="${product.productName}"> Product </strong>
+          <div class="col-12 d-flex gap-2">
+            <button type="submit" class="btn btn-dark">Apply</button>
 
-              <div class="small text-secondary" th:text="${product.size}"></div>
-            </td>
+            <a th:href="@{/products}" class="btn btn-outline-secondary">
+              Reset
+            </a>
+          </div>
+        </form>
+      </section>
 
-            <td>
-              <span class="badge"
-                    th:text="${product.quantity}"
-                    th:classappend="${product.quantity < 10} ? 'text-bg-danger' : 'text-bg-success'">
-              </span>
-            </td>
+      <!-- Product table -->
+      <section class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead class="table-dark">
+            <tr>
+              <th
+                th:classappend="${sortField == 'productName'
+                ? 'sort-active ' + sortDirection
+                : ''}"
+              >
+                Product
+              </th>
 
-            <td th:text="${product.petType}">Dog</td>
+              <th
+                th:classappend="${sortField == 'quantity'
+                ? 'sort-active ' + sortDirection
+                : ''}"
+              >
+                Quantity
+              </th>
 
-            <td th:text="${product.brand.brandName}">Brand</td>
+              <th>Pet Type</th>
 
-            <td th:text="${product.category.categoryName}">Category</td>
+              <th
+                th:classappend="${sortField == 'brand.brandName'
+                ? 'sort-active ' + sortDirection
+                : ''}"
+              >
+                Brand
+              </th>
 
-            <td th:text="${'$'
-                    + #numbers.formatDecimal(
-                        product.price, 1, 2)}">
-              $0.00
-            </td>
+              <th
+                th:classappend="${sortField == 'category.categoryName'
+                ? 'sort-active ' + sortDirection
+                : ''}"
+              >
+                Category
+              </th>
 
-            <td>
-              <div class="d-flex flex-wrap gap-2">
-                <a class="btn btn-sm btn-outline-primary" th:href="@{/products/{id}(id=${product.productId})}">
-                  View
-                </a>
+              <th
+                th:classappend="${sortField == 'price'
+                ? 'sort-active ' + sortDirection
+                : ''}"
+              >
+                Price
+              </th>
 
-                <a class="btn btn-sm btn-outline-dark" th:href="@{/products/{id}/edit(id=${product.productId})}">
-                  Edit
-                </a>
+              <th>Actions</th>
+            </tr>
+          </thead>
 
-                <form th:action="@{/products/{id}/delete(id=${product.productId})}" method="post"
-                  onsubmit="return confirm('Are you sure you want to delete this product?');">
-                  <button type="submit" class="btn btn-sm btn-outline-danger">
-                    Delete
-                  </button>
-                </form>
-              </div>
-            </td>
-          </tr>
+          <tbody>
+            <tr th:each="product : ${products}">
+              <td>
+                <strong th:text="${product.productName}"> Product </strong>
 
-          <tr th:if="${#lists.isEmpty(products)}">
-            <td colspan="6" class="text-center py-5">
-              <h2 class="h5">No products found</h2>
+                <div
+                  class="small text-secondary"
+                  th:text="${product.size}"
+                ></div>
+              </td>
 
-              <p class="text-secondary mb-0">
-                Try changing the search or filter values.
-              </p>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
+              <td>
+                <span
+                  class="badge"
+                  th:text="${product.quantity}"
+                  th:classappend="${product.quantity < 10}
+                  ? 'text-bg-danger'
+                  : 'text-bg-success'"
+                ></span>
+              </td>
 
-    <nav th:if="${productPage.totalPages > 1}" aria-label="Product pages" class="mt-4">
-      <ul class="pagination justify-content-center">
-        <li class="page-item" th:classappend="${productPage.first}
-                    ? 'disabled' : ''">
-          <a class="page-link" th:href="@{/products(
-                       page=${productPage.number - 1},
-                       keyword=${keyword},
-                       brandId=${selectedBrandId},
-                       categoryId=${selectedCategoryId},
-                       petType=${selectedPetType},
-                       sortField=${sortField},
-                       sortDirection=${sortDirection})}">
-            Previous
-          </a>
-        </li>
+              <td th:text="${product.petType}">Dog</td>
 
-        <li class="page-item" th:each="pageNumber :
-                    ${#numbers.sequence(
-                        0,
-                        productPage.totalPages - 1)}" th:classappend="${pageNumber
-                    == productPage.number}
-                    ? 'active' : ''">
-          <a class="page-link" th:text="${pageNumber + 1}" th:href="@{/products(
-                       page=${pageNumber},
-                       keyword=${keyword},
-                       brandId=${selectedBrandId},
-                       categoryId=${selectedCategoryId},
-                       petType=${selectedPetType},
-                       sortField=${sortField},
-                       sortDirection=${sortDirection})}">
-            1
-          </a>
-        </li>
+              <td th:text="${product.brand.brandName}">Brand</td>
 
-        <li class="page-item" th:classappend="${productPage.last}
-                    ? 'disabled' : ''">
-          <a class="page-link" th:href="@{/products(
-                       page=${productPage.number + 1},
-                       keyword=${keyword},
-                       brandId=${selectedBrandId},
-                       categoryId=${selectedCategoryId},
-                       petType=${selectedPetType},
-                       sortField=${sortField},
-                       sortDirection=${sortDirection})}">
-            Next
-          </a>
-        </li>
-      </ul>
-    </nav>
-  </main>
+              <td th:text="${product.category.categoryName}">Category</td>
 
-  <div th:replace="~{fragments/footer :: footer}"></div>
+              <td
+                th:text="${'$' + #numbers.formatDecimal(product.price, 1, 2)}"
+              >
+                $0.00
+              </td>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+              <td>
+                <div class="d-flex flex-wrap gap-2">
+                  <!-- Every authenticated role can view -->
+                  <a
+                    class="btn btn-sm btn-outline-primary"
+                    th:href="@{/products/{id}(id=${product.productId})}"
+                  >
+                    View
+                  </a>
 
+                  <!-- Only Staff and Admin can edit -->
+                  <a
+                    class="btn btn-sm btn-outline-dark"
+                    th:href="@{/products/{id}/edit(id=${product.productId})}"
+                    sec:authorize="hasAnyRole('STAFF', 'ADMIN')"
+                  >
+                    Edit
+                  </a>
+
+                  <!-- Only Admin can delete -->
+                  <form
+                    th:action="@{/products/{id}/delete(id=${product.productId})}"
+                    method="post"
+                    class="d-inline"
+                    sec:authorize="hasRole('ADMIN')"
+                    onsubmit="
+                      return confirm(
+                        'Are you sure you want to delete this product?',
+                      );
+                    "
+                  >
+                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                      Delete
+                    </button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+
+            <!-- Empty result message -->
+            <tr th:if="${#lists.isEmpty(products)}">
+              <td colspan="7" class="text-center py-5">
+                <h2 class="h5">No products found</h2>
+
+                <p class="text-secondary mb-0">
+                  Try changing the search or filter values.
+                </p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Pagination -->
+      <nav
+        th:if="${productPage.totalPages > 1}"
+        aria-label="Product pages"
+        class="mt-4"
+      >
+        <ul class="pagination justify-content-center">
+          <li
+            class="page-item"
+            th:classappend="${productPage.first} ? 'disabled' : ''"
+          >
+            <a
+              class="page-link"
+              th:href="@{/products(
+              page=${productPage.number - 1},
+              keyword=${keyword},
+              brandId=${selectedBrandId},
+              categoryId=${selectedCategoryId},
+              petType=${selectedPetType},
+              sortField=${sortField},
+              sortDirection=${sortDirection}
+            )}"
+            >
+              Previous
+            </a>
+          </li>
+
+          <li
+            class="page-item"
+            th:each="pageNumber : ${#numbers.sequence(
+            0,
+            productPage.totalPages - 1
+          )}"
+            th:classappend="${pageNumber == productPage.number}
+            ? 'active'
+            : ''"
+          >
+            <a
+              class="page-link"
+              th:text="${pageNumber + 1}"
+              th:href="@{/products(
+              page=${pageNumber},
+              keyword=${keyword},
+              brandId=${selectedBrandId},
+              categoryId=${selectedCategoryId},
+              petType=${selectedPetType},
+              sortField=${sortField},
+              sortDirection=${sortDirection}
+            )}"
+            >
+              1
+            </a>
+          </li>
+
+          <li
+            class="page-item"
+            th:classappend="${productPage.last} ? 'disabled' : ''"
+          >
+            <a
+              class="page-link"
+              th:href="@{/products(
+              page=${productPage.number + 1},
+              keyword=${keyword},
+              brandId=${selectedBrandId},
+              categoryId=${selectedCategoryId},
+              petType=${selectedPetType},
+              sortField=${sortField},
+              sortDirection=${sortDirection}
+            )}"
+            >
+              Next
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </main>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
 </html>
