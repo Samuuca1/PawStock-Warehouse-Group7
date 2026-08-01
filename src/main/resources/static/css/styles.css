@@ -11,6 +11,10 @@ body {
   color: #26302c;
 }
 
+body.admin-bg {
+  background-color: var(--paw-primary-dark);
+}
+
 .navbar-brand {
   letter-spacing: 0.02em;
 }
