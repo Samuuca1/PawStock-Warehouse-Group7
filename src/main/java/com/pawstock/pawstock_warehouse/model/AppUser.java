@@ -1,6 +1,8 @@
 package com.pawstock.pawstock_warehouse.model;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,6 +18,10 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 @Entity
 @Table(
         name = "app_users",
@@ -30,7 +36,7 @@ import jakarta.validation.constraints.Size;
                 )
         }
 )
-public class AppUser {
+public class AppUser implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -80,6 +86,31 @@ public class AppUser {
         }
     }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        if (role == null) {
+            return List.of(new SimpleGrantedAuthority("ROLE_" + Role.CUSTOMER.name()));
+        }
+        return List.of(
+                new SimpleGrantedAuthority("ROLE_" + role.name())
+        );
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
     public Long getUserId() {
         return userId;
     }
@@ -88,6 +119,7 @@ public class AppUser {
         this.userId = userId;
     }
 
+    @Override
     public String getUsername() {
         return username;
     }
@@ -104,6 +136,7 @@ public class AppUser {
         this.email = email;
     }
 
+    @Override
     public String getPassword() {
         return password;
     }
@@ -128,6 +161,7 @@ public class AppUser {
         this.role = role;
     }
 
+    @Override
     public boolean isEnabled() {
         return enabled;
     }
