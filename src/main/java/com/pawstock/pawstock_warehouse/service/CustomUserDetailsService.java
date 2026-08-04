@@ -1,6 +1,5 @@
 package com.pawstock.pawstock_warehouse.service;
 
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -34,11 +33,6 @@ public class CustomUserDetailsService
                         )
                 );
 
-        return User.builder()
-                .username(user.getUsername())
-                .password(user.getPassword())
-                .roles(user.getRole().name())
-                .disabled(!user.isEnabled())
-                .build();
+        return user;
     }
 }
