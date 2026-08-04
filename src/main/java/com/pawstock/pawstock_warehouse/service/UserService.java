@@ -26,6 +26,9 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    /**
+     * Registers a new user with the CUSTOMER role.
+     */
     @Transactional
     public AppUser registerUser(RegistrationForm form) {
 
@@ -55,16 +58,24 @@ public class UserService {
         user.setFullName(form.getFullName().trim());
         user.setUsername(username);
         user.setEmail(email);
+
+        // Store only the BCrypt-encoded password.
         user.setPassword(
                 passwordEncoder.encode(form.getPassword())
         );
+
+        // Public registration always creates a customer.
         user.setRole(Role.CUSTOMER);
         user.setEnabled(true);
 
         return userRepository.save(user);
     }
 
+    /**
+     * Finds a user by username.
+     */
     public AppUser findByUsername(String username) {
+
         return userRepository.findByUsernameIgnoreCase(username)
                 .orElseThrow(() ->
                         new IllegalArgumentException(
@@ -73,7 +84,11 @@ public class UserService {
                 );
     }
 
+    /**
+     * Finds a user by database ID.
+     */
     public AppUser findById(Long userId) {
+
         return userRepository.findById(userId)
                 .orElseThrow(() ->
                         new IllegalArgumentException(
@@ -82,36 +97,63 @@ public class UserService {
                 );
     }
 
+    /**
+     * Returns all users ordered by username.
+     */
     public List<AppUser> getAllUsers() {
         return userRepository.findAllByOrderByUsernameAsc();
     }
 
+    /**
+     * Updates and saves a user's role.
+     */
     @Transactional
     public AppUser updateRole(
             Long userId,
             Role role
     ) {
+
+        if (role == null) {
+            throw new IllegalArgumentException(
+                    "Please select a valid user role."
+            );
+        }
+
         AppUser user = findById(userId);
+
         user.setRole(role);
 
-        return userRepository.save(user);
+        // Flush writes the role change to H2 Database
+        return userRepository.saveAndFlush(user);
     }
 
+    /**
+     * Enables or disables a user account.
+     * (for future function).
+     */
     @Transactional
     public AppUser updateEnabledStatus(
             Long userId,
             boolean enabled
     ) {
+
         AppUser user = findById(userId);
+
         user.setEnabled(enabled);
 
-        return userRepository.save(user);
+        return userRepository.saveAndFlush(user);
     }
 
+    /**
+     * Deletes a user account.
+     */
     @Transactional
     public void deleteUser(Long userId) {
+
         AppUser user = findById(userId);
+
         userRepository.delete(user);
+        userRepository.flush();
     }
 
     public long countUsers() {
