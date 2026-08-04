@@ -1,147 +1,105 @@
 <!doctype html>
-<html
-  lang="en"
-  xmlns:th="http://www.thymeleaf.org"
-  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
->
-  <body>
-    <nav
-      th:fragment="navbar"
-      class="navbar navbar-expand-lg navbar-dark bg-dark"
-    >
-      <div class="container">
-        <a class="navbar-brand fw-bold" th:href="@{/}"> PawStock Warehouse </a>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#mainNavbar"
-          aria-controls="mainNavbar"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
+<body>
+  <nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand fw-bold" th:href="@{/}">
+        PawStock Warehouse
+      </a>
 
-        <div id="mainNavbar" class="collapse navbar-collapse">
-          <!-- Main navigation links -->
-          <ul class="navbar-nav me-auto">
-            <li class="nav-item">
-              <a
-                class="nav-link"
-                th:href="@{/}"
-                th:classappend="${activePage == 'home'} ? 'active' : ''"
-              >
-                Home
-              </a>
-            </li>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
+        aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-            <!-- Products are available for guest view-only -->
-            <li class="nav-item">
-              <a
-                class="nav-link"
-                th:href="@{/products}"
-                th:classappend="${activePage == 'products'} ? 'active' : ''"
-              >
-                Products
-              </a>
-            </li>
+      <div id="mainNavbar" class="collapse navbar-collapse">
+        <!-- Main navigation links -->
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link" th:href="@{/}" th:classappend="${activePage == 'home'} ? 'active' : ''">
+              Home
+            </a>
+          </li>
 
-            <!-- Only Staff and Admin can add products -->
-            <li class="nav-item" sec:authorize="hasAnyRole('STAFF', 'ADMIN')">
-              <a
-                class="nav-link"
-                th:href="@{/products/new}"
-                th:classappend="${activePage == 'addProduct'} ? 'active' : ''"
-              >
-                Add Product
-              </a>
-            </li>
+          <!-- Products are available for guest view-only -->
+          <li class="nav-item">
+            <a class="nav-link" th:href="@{/products}" th:classappend="${activePage == 'products'} ? 'active' : ''">
+              Products
+            </a>
+          </li>
 
-            <li class="nav-item">
-              <a
-                class="nav-link"
-                th:href="@{/warehouse}"
-                th:classappend="${activePage == 'warehouse'} ? 'active' : ''"
-              >
-                Warehouse
-              </a>
-            </li>
-            <!-- Roadmap navbar (keep for deliverable 2)-->
-            <li class="nav-item">
-              <a
-                class="nav-link"
-                th:href="@{/roadmap}"
-                th:classappend="${activePage == 'roadmap'} ? 'active' : ''"
-              >
-                Roadmap
-              </a>
-            </li>
+          <!-- Only Staff and Admin can add products -->
+          <li class="nav-item" sec:authorize="hasAnyRole('STAFF', 'ADMIN')">
+            <a class="nav-link" th:href="@{/products/new}"
+              th:classappend="${activePage == 'addProduct'} ? 'active' : ''">
+              Add Product
+            </a>
+          </li>
 
-            <li class="nav-item">
-              <a
-                class="nav-link"
-                th:href="@{/about}"
-                th:classappend="${activePage == 'about'} ? 'active' : ''"
-              >
-                About
-              </a>
-            </li>
+          <li class="nav-item">
+            <a class="nav-link" th:href="@{/warehouse}" th:classappend="${activePage == 'warehouse'} ? 'active' : ''">
+              Warehouse
+            </a>
+          </li>
 
-            <li class="nav-item" sec:authorize="hasRole('ADMIN')">
-              <a
-                class="nav-link"
-                th:href="@{/admin}"
-                th:classappend="${activePage == 'admin'} ? 'active' : ''"
-              >
-                Admin
-              </a>
-            </li>
-          </ul>
+          <!-- Roadmap navbar link -->
+          <li class="nav-item">
+            <a class="nav-link" th:href="@{/roadmap}" th:classappend="${activePage == 'roadmap'} ? 'active' : ''">
+              Roadmap
+            </a>
+          </li>
 
-          <!-- Account navigation -->
-          <ul class="navbar-nav align-items-lg-center">
-            <!-- Login and Register appear only for guests -->
-            <li class="nav-item" sec:authorize="isAnonymous()">
-              <a
-                class="nav-link"
-                th:href="@{/login}"
-                th:classappend="${activePage == 'login'} ? 'active' : ''"
-              >
-                Login
-              </a>
-            </li>
+          <li class="nav-item">
+            <a class="nav-link" th:href="@{/about}" th:classappend="${activePage == 'about'} ? 'active' : ''">
+              About
+            </a>
+          </li>
 
-            <li class="nav-item" sec:authorize="isAnonymous()">
-              <a
-                class="nav-link"
-                th:href="@{/register}"
-                th:classappend="${activePage == 'register'} ? 'active' : ''"
-              >
-                Register
-              </a>
-            </li>
+          <!-- Only ADMIN users can see the Admin link -->
+          <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+            <a class="nav-link admin-nav-link" th:href="@{/admin}"
+              th:classappend="${activePage == 'admin'} ? 'active' : ''">
+              Admin
+            </a>
+          </li>
+        </ul>
 
-            <!-- Show username after login -->
-            <li class="nav-item me-lg-3" sec:authorize="isAuthenticated()">
-              <span class="navbar-text">
-                Signed in as
-                <strong sec:authentication="name">username</strong>
-              </span>
-            </li>
+        <!-- Account navigation -->
+        <ul class="navbar-nav align-items-lg-center">
+          <!-- Login and Register appear only for guests -->
+          <li class="nav-item" sec:authorize="isAnonymous()">
+            <a class="nav-link" th:href="@{/login}" th:classappend="${activePage == 'login'} ? 'active' : ''">
+              Login
+            </a>
+          </li>
 
-            <!-- Logout must use POST -->
-            <li class="nav-item" sec:authorize="isAuthenticated()">
-              <form th:action="@{/logout}" method="post" class="d-inline">
-                <button type="submit" class="btn btn-outline-light btn-sm">
-                  Logout
-                </button>
-              </form>
-            </li>
-          </ul>
-        </div>
+          <li class="nav-item" sec:authorize="isAnonymous()">
+            <a class="nav-link" th:href="@{/register}" th:classappend="${activePage == 'register'} ? 'active' : ''">
+              Register
+            </a>
+          </li>
+
+          <!-- Show username after login -->
+          <li class="nav-item me-lg-3" sec:authorize="isAuthenticated()">
+            <span class="navbar-text">
+              Signed in as
+              <strong sec:authentication="name">username</strong>
+            </span>
+          </li>
+
+          <!-- Logout must use POST -->
+          <li class="nav-item" sec:authorize="isAuthenticated()">
+            <form th:action="@{/logout}" method="post" class="d-inline">
+              <button type="submit" class="btn btn-outline-light btn-sm">
+                Logout
+              </button>
+            </form>
+          </li>
+        </ul>
       </div>
-    </nav>
-  </body>
+    </div>
+  </nav>
+</body>
+
 </html>
