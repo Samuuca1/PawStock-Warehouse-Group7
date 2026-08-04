@@ -19,6 +19,21 @@ body.admin-bg {
   letter-spacing: 0.02em;
 }
 
+/*
+ * Give the Admin navbar item a different colour so that
+ * it can be easily distinguished from the other links.
+ */
+.navbar .admin-nav-link,
+.navbar .admin-nav-link.active {
+  color: var(--paw-accent);
+  font-weight: 600;
+}
+
+.navbar .admin-nav-link:hover,
+.navbar .admin-nav-link:focus {
+  color: #ffd58f;
+}
+
 .hero-section {
   background: linear-gradient(135deg, #eef6f2 0%, #f8eee0 100%);
 }
@@ -50,7 +65,10 @@ body.admin-bg {
 
 .dashboard-card,
 .content-card {
-  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .clickable-card-link {
@@ -92,7 +110,7 @@ body.admin-bg {
   color: var(--paw-primary);
 }
 
-.active > .page-link {
+.active>.page-link {
   background-color: var(--paw-primary);
   border-color: var(--paw-primary);
 }
@@ -119,6 +137,7 @@ footer {
 }
 
 @media (max-width: 767px) {
+
   .hero-card,
   .content-card,
   .form-card,
