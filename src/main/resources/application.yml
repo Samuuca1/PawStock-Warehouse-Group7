@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: pawstock-warehouse
+
+  # Use the development profile when no profile is specified.
+  profiles:
+    default: dev
+
+  thymeleaf:
+    cache: false
+
+server:
+  port: 8080

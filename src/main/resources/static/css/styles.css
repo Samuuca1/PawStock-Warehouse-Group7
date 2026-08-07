@@ -110,7 +110,7 @@ body.admin-bg {
   color: var(--paw-primary);
 }
 
-.active>.page-link {
+.active > .page-link {
   background-color: var(--paw-primary);
   border-color: var(--paw-primary);
 }
@@ -137,7 +137,6 @@ footer {
 }
 
 @media (max-width: 767px) {
-
   .hero-card,
   .content-card,
   .form-card,
@@ -149,4 +148,17 @@ footer {
   .display-4 {
     font-size: 2.4rem;
   }
+}
+.admin-management-card {
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+  cursor: pointer;
+}
+
+.admin-management-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.16) !important;
+  border-color: #198754;
 }
