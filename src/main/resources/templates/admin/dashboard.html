@@ -67,7 +67,58 @@
             <span class="badge text-bg-danger mb-2">
               Administrator Dashboard
             </span>
+            <div class="row g-3 mb-4">
+              <div class="col-md-4">
+                <a
+                  th:href="@{/admin/brands}"
+                  class="text-decoration-none text-reset"
+                >
+                  <div class="card h-100 shadow-sm admin-management-card">
+                    <div class="card-body">
+                      <h2 class="h5">Brand Management</h2>
 
+                      <p class="text-secondary mb-0">
+                        Add, update, or remove product brands.
+                      </p>
+                    </div>
+                  </div>
+                </a>
+              </div>
+
+              <div class="col-md-4">
+                <a
+                  th:href="@{/admin/categories}"
+                  class="text-decoration-none text-reset"
+                >
+                  <div class="card h-100 shadow-sm admin-management-card">
+                    <div class="card-body">
+                      <h2 class="h5">Category Management</h2>
+
+                      <p class="text-secondary mb-0">
+                        Add, update, or remove product categories.
+                      </p>
+                    </div>
+                  </div>
+                </a>
+              </div>
+
+              <div class="col-md-4">
+                <a
+                  th:href="@{/admin/suppliers}"
+                  class="text-decoration-none text-reset"
+                >
+                  <div class="card h-100 shadow-sm admin-management-card">
+                    <div class="card-body">
+                      <h2 class="h5">Supplier Management</h2>
+
+                      <p class="text-secondary mb-0">
+                        Add, update, or remove product suppliers.
+                      </p>
+                    </div>
+                  </div>
+                </a>
+              </div>
+            </div>
             <h1 class="mb-1">User Management</h1>
 
             <p class="text-secondary mb-0">
