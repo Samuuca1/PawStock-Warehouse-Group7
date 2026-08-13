@@ -14,7 +14,16 @@
     <link rel="stylesheet" th:href="@{/css/styles.css}" />
   </head>
 
-  <body class="bg-light">
+  <body class="d-flex flex-column min-vh-100 bg-light">
+    <!-- Navigation (Simplified for auth pages) -->
+    <nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container">
+        <a class="navbar-brand fw-bold" th:href="@{/}">
+          PawStock Warehouse
+        </a>
+      </div>
+    </nav>
+
     <div class="container py-5">
       <div class="row justify-content-center">
         <div class="col-md-6 col-lg-5">
@@ -85,5 +94,8 @@
         </div>
       </div>
     </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
   </body>
 </html>
